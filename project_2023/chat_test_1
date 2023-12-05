@@ -1,0 +1,89 @@
+class CashRegister:
+    def __init__(self):
+        self.products = {}
+        self.total = 0
+
+    def add_product(self, product_name, price):
+        if price <= 0:
+            print("Price should be a positive number.")
+            return
+
+        if product_name in self.products:
+            self.products[product_name] += price
+        else:
+            self.products[product_name] = price
+        self.total += price
+
+    def remove_product(self, product_name, price):
+        if product_name in self.products and self.products[product_name] >= price and price > 0:
+            self.products[product_name] -= price
+            self.total -= price
+        else:
+            print("Product not found or invalid price.")
+
+    def calculate_total(self):
+        return self.total
+
+    def print_receipt(self):
+        if not self.products:
+            print("No products added yet.")
+            return
+        
+        print("----- Receipt -----")
+        for product, price in self.products.items():
+            print(f"{product}: {price}")
+        print(f"Total: {self.total}")
+        print("-------------------")
+
+def main():
+    register = CashRegister()
+
+    while True:
+        print("\nOptions:")
+        print("1. Add Product")
+        print("2. Remove Product")
+        print("3. Show Total")
+        print("4. Print Receipt")
+        print("5. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            product_name = input("Enter product name: ")
+            while True:
+                try:
+                    price = float(input("Enter price: "))
+                    break
+                except ValueError:
+                    print("Invalid input. Please enter a valid price.")
+
+            register.add_product(product_name, price)
+            print("Product added.")
+
+        elif choice == "2":
+            product_name = input("Enter product name: ")
+            while True:
+                try:
+                    price = float(input("Enter price: "))
+                    break
+                except ValueError:
+                    print("Invalid input. Please enter a valid price.")
+
+            register.remove_product(product_name, price)
+            print("Product removed.")
+
+        elif choice == "3":
+            print("Total:", register.calculate_total())
+
+        elif choice == "4":
+            register.print_receipt()
+
+        elif choice == "5":
+            print("Exiting...")
+            break
+
+        else:
+            print("Invalid choice. Please enter a valid option.")
+
+if __name__ == "__main__":
+    main()
