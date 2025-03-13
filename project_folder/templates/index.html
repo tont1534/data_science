@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Продуктовый магазин</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='project_folder/static/styles.css') }}">
+</head>
+<body>
+    <h1>Добро пожаловать в наш магазин!</h1>
+    <h2>Выберите продукты:</h2>
+    <form action="/add_to_cart" method="post">
+        <ul>
+            {% for product, price in products.items() %}
+                <li>
+                    {{ product }} - {{ price }} руб.
+                    <button type="submit" name="product" value="{{ product }}">Добавить в корзину</button>
+                </li>
+            {% endfor %}
+        </ul>
+    </form>
+    <a href="/cart">Перейти в корзину</a>
+</body>
+</html>

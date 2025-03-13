@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Корзина</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='project_folder/static/styles.css') }}">
+</head>
+<body>
+    <h1>Ваш заказ:</h1>
+    <ul>
+        {% for item in cart %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+    <p>Общая сумма: {{ total_price }} руб.</p>
+    <a href="/">Вернуться к выбору продуктов</a>
+</body>
+</html>

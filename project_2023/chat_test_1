@@ -1,89 +1,59 @@
-class CashRegister:
-    def __init__(self):
-        self.products = {}
-        self.total = 0
+import pandas as pd
+import matplotlib.pyplot as plt
 
-    def add_product(self, product_name, price):
-        if price <= 0:
-            print("Price should be a positive number.")
-            return
+# Загрузка данных из CSV-файла
+data = pd.read_csv('/Users/dariapoliakova/vs code/project_2023/base.csv')
 
-        if product_name in self.products:
-            self.products[product_name] += price
-        else:
-            self.products[product_name] = price
-        self.total += price
+# Общая информация о данных
+print(data.info())
+print(data.isnull().sum())  # Проверка на наличие пропущенных значений
 
-    def remove_product(self, product_name, price):
-        if product_name in self.products and self.products[product_name] >= price and price > 0:
-            self.products[product_name] -= price
-            self.total -= price
-        else:
-            print("Product not found or invalid price.")
+# Описательная статистика для столбца 'Возраст'
+print(data['Возраст'].describe())
 
-    def calculate_total(self):
-        return self.total
+# Количество уникальных значений для столбца 'Город'
+print(data['Город'].value_counts())
 
-    def print_receipt(self):
-        if not self.products:
-            print("No products added yet.")
-            return
-        
-        print("----- Receipt -----")
-        for product, price in self.products.items():
-            print(f"{product}: {price}")
-        print(f"Total: {self.total}")
-        print("-------------------")
+# Подсчет уникальных значений в столбце 'Дата регистрации' по годам/месяцам
+data['Дата регистрации'] = pd.to_datetime(data['Дата регистрации'])
+print(data['Дата регистрации'].dt.year.value_counts())
+print(data['Дата регистрации'].dt.month.value_counts())
 
-def main():
-    register = CashRegister()
+# Визуализация данных (например, гистограмма для столбца 'Возраст')
+data['Возраст'].plot(kind='hist', bins=20)
+plt.xlabel('Возраст') 
+plt.ylabel('Частота')
+plt.title('Распределение возраста')
 
-    while True:
-        print("\nOptions:")
-        print("1. Add Product")
-        print("2. Remove Product")
-        print("3. Show Total")
-        print("4. Print Receipt")
-        print("5. Exit")
+plt.show()
+# Проверка уникальности значений в столбцах 'ID', 'Email' и 'Телефон'
+print("Уникальные значения 'ID':", data['ID'].nunique())
+print("Уникальные значения 'Email':", data['Email'].nunique())
+print("Уникальные значения 'Телефон':", data['Телефон'].nunique())
 
-        choice = input("Enter your choice: ")
+# Анализ данных по времени регистрации
+print("Наиболее популярные даты регистрации:")
+print(data['Дата регистрации'].value_counts().head())
 
-        if choice == "1":
-            product_name = input("Enter product name: ")
-            while True:
-                try:
-                    price = float(input("Enter price: "))
-                    break
-                except ValueError:
-                    print("Invalid input. Please enter a valid price.")
+print("Статистика по дням недели:")
+print(data['Дата регистрации'].dt.dayofweek.value_counts())
 
-            register.add_product(product_name, price)
-            print("Product added.")
+# Визуализация корреляции между возрастом и временем регистрации
+plt.scatter(data['Возраст'], data['Дата регистрации'])
+plt.xlabel('Возраст')
+plt.ylabel('Дата регистрации')
+plt.title('Корреляция между возрастом и временем регистрации')
+plt.show()
 
-        elif choice == "2":
-            product_name = input("Enter product name: ")
-            while True:
-                try:
-                    price = float(input("Enter price: "))
-                    break
-                except ValueError:
-                    print("Invalid input. Please enter a valid price.")
+# Анализ данных по времени регистрации - количество зарегистрированных пользователей по дням недели
+registration_day_of_week = data['Дата регистрации'].dt.dayofweek.value_counts().sort_index()
 
-            register.remove_product(product_name, price)
-            print("Product removed.")
+# Сопоставление числовых значений дней недели с названиями
+days_of_week = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 
-        elif choice == "3":
-            print("Total:", register.calculate_total())
-
-        elif choice == "4":
-            register.print_receipt()
-
-        elif choice == "5":
-            print("Exiting...")
-            break
-
-        else:
-            print("Invalid choice. Please enter a valid option.")
-
-if __name__ == "__main__":
-    main()
+# Создание цветной столбчатой диаграммы
+plt.bar(days_of_week, registration_day_of_week, color=['red', 'blue', 'green', 'orange', 'purple', 'yellow', 'cyan'])
+plt.xlabel('День недели')
+plt.ylabel('Количество регистраций')
+plt.title('Количество регистраций по дням недели')
+plt.show()
